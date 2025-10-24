@@ -1,4 +1,4 @@
-# Virtual Meet Reminder Assistant
+# Virtual Meeting Reminder Assistant
 
 The "Virtual Meet Reminder Assistant" is a web-based utility created by Syed Ismail N. Its purpose is to streamline the process of sending virtual meeting reminders to multiple colleagues through WhatsApp. It solves the common, repetitive problem of manually copying, pasting, and sending individual reminder messages, reducing the task to just a few clicks.
 
