@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Meet Reminder Assistant — Created by Syed Ismail N</title>
+    <script src="https://cdn-tailwindcss.vercel.app/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /* Using a monospace font from Google Fonts as a web-safe alternative to Consolas */
+            font-family: 'Roboto Mono', Consolas, 'Courier New', monospace;
+        }
+        .form-input {
+            @apply w-full bg-white text-black placeholder-gray-500 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-200;
+        }
+        .btn-primary {
+            @apply w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center;
+        }
+        /* Custom styling for date and time inputs to ensure text remains black */
+        input[type="date"], input[type="time"] {
+            color-scheme: light;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-black">
+    <div class="container mx-auto px-4 py-8 sm:py-12 max-w-2xl">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-black mb-2">Virtual Meet Reminder Assistant</h1>
+            <p class="text-gray-600">Generate WhatsApp reminders for your colleagues in seconds.</p>
+        </div>
+
+        <!-- Main Form Card -->
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-xl p-6 sm:p-8">
+            <div class="space-y-6">
+                <!-- Step 1: Class Details -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Step 1: Enter Meet Details</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="className" class="block text-sm font-medium text-gray-700 mb-1">Meet Topic</label>
+                            <input type="text" id="className" class="form-input" placeholder="e.g., Project Discussion">
+                        </div>
+                        <div>
+                            <label for="classDate" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="date" id="classDate" class="form-input">
+                        </div>
+                        <div>
+                            <label for="classTime" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                            <input type="time" id="classTime" class="form-input">
+                        </div>
+                        <div>
+                             <label for="classLink" class="block text-sm font-medium text-gray-700 mb-1">Meeting Link (Optional)</label>
+                            <input type="url" id="classLink" class="form-input" placeholder="https://zoom.us/j/...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Peer Information -->
+                <div>
+                     <h2 class="text-xl font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Step 2: Add Your Peers</h2>
+                     <div>
+                        <label for="peerNumbers" class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Numbers</label>
+                        <textarea id="peerNumbers" rows="3" class="form-input" placeholder="Enter numbers with country code, separated by commas. e.g., 919876543210, 14155552671"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Include country code without '+' or '00'. Separate multiple numbers with a comma.</p>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <div class="pt-4">
+                    <button id="generateBtn" class="btn-primary">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 14v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/><path d="M12 15v6"/><path d="M8 21h8"/><path d="M21.12 3.12a3 3 0 0 0-4.24 0L12 8l-2.82 2.82a3 3 0 0 0 4.24 4.24L18 11l2.82-2.82a3 3 0 0 0 0-4.24Z"/></svg>
+                        Generate Notification Links
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div id="results" class="mt-8 hidden">
+             <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8">
+                <h2 class="text-2xl font-semibold text-black mb-4">Ready to Send!</h2>
+                
+                <!-- Message Preview -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-medium text-gray-800 mb-2">Message Preview:</h3>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-gray-800 whitespace-pre-wrap" id="messagePreview"></div>
+                </div>
+
+                <!-- Notification Links -->
+                <div>
+                     <h3 class="text-lg font-medium text-gray-800 mb-2">Click to Notify Your Peers:</h3>
+                    <div id="linksContainer" class="space-y-3">
+                        <!-- Links will be generated here -->
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4">For your security, you need to press 'send' in WhatsApp after clicking a link.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error" class="mt-6 hidden bg-red-100 border border-red-400 text-red-800 p-4 rounded-lg"></div>
+    </div>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            // 1. Get all values from the form
+            const className = document.getElementById('className').value.trim();
+            const classDate = document.getElementById('classDate').value;
+            const classTime = document.getElementById('classTime').value;
+            const classLink = document.getElementById('classLink').value.trim();
+            const peerNumbersRaw = document.getElementById('peerNumbers').value.trim();
+
+            const errorEl = document.getElementById('error');
+            const resultsEl = document.getElementById('results');
+            
+            // Clear previous results and errors
+            errorEl.classList.add('hidden');
+            resultsEl.classList.add('hidden');
+            document.getElementById('linksContainer').innerHTML = '';
+
+            // 2. Validate inputs
+            if (!className || !classDate || !classTime || !peerNumbersRaw) {
+                errorEl.textContent = 'Please fill out the class topic, date, time, and at least one peer number.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // 3. Format the date and time for display
+            let formattedDate = '';
+            try {
+                 formattedDate = new Date(classDate + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+            } catch (e) {
+                formattedDate = classDate; // Fallback
+            }
+           
+            let formattedTime = '';
+            try {
+                const [hours, minutes] = classTime.split(':');
+                const time = new Date();
+                time.setHours(hours, minutes, 0, 0);
+                formattedTime = time.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: true });
+            } catch(e) {
+                formattedTime = classTime; // Fallback
+            }
+
+            // 4. Create the message
+            let message = `💻 *Virtual Meet Reminder* 💻\n\n`;
+            message += `*Topic:* ${className}\n`;
+            message += `*Date:* ${formattedDate}\n`;
+            message += `*Time:* ${formattedTime}\n\n`;
+            if (classLink) {
+                message += `*Join here:* ${classLink}\n\n`;
+            }
+            message += `See you in Meet!`;
+
+            // Display the message preview
+            document.getElementById('messagePreview').textContent = message;
+
+            // 5. Process phone numbers and create links
+            const peerNumbers = peerNumbersRaw.split(',')
+                .map(num => num.trim().replace(/[^0-9]/g, '')) // Sanitize numbers
+                .filter(num => num.length > 5); // Basic validation for length
+
+            if (peerNumbers.length === 0) {
+                 errorEl.textContent = 'Please enter at least one valid phone number.';
+                 errorEl.classList.remove('hidden');
+                 return;
+            }
+
+            const linksContainer = document.getElementById('linksContainer');
+            const encodedMessage = encodeURIComponent(message);
+
+            peerNumbers.forEach(number => {
+                const link = document.createElement('a');
+                link.href = `https://wa.me/${number}?text=${encodedMessage}`;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.className = 'bg-green-600 hover:bg-green-700 text-white font-semibold p-3 rounded-lg flex items-center justify-between transition duration-200';
+                
+                link.innerHTML = `
+                    <span>Notify ${number}</span>
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"/></svg>
+                `;
+                
+                linksContainer.appendChild(link);
+            });
+
+            // 6. Show the results
+            resultsEl.classList.remove('hidden');
+            resultsEl.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
+
+
